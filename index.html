@@ -1,0 +1,270 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Discover and sell digital products worldwide with GM Digital.">
+  <title>GM Digital — Global Digital Marketplace</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      color: #172033;
+      background: #f7f8fc;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 7%;
+      background: white;
+      border-bottom: 1px solid #e8eaf0;
+    }
+    .logo { font-size: 23px; font-weight: 800; color: #5145e5; }
+    nav { display: flex; align-items: center; gap: 20px; }
+    nav a { color: #374151; text-decoration: none; font-size: 14px; }
+    button {
+      cursor: pointer;
+      border: 0;
+      border-radius: 9px;
+      padding: 11px 16px;
+      font-weight: 700;
+    }
+    .primary { background: #5145e5; color: white; }
+    .hero {
+      text-align: center;
+      padding: 90px 20px 75px;
+      background: linear-gradient(135deg, #efedff, #ffffff);
+    }
+    .tag {
+      display: inline-block;
+      padding: 8px 13px;
+      border-radius: 30px;
+      background: #e4e0ff;
+      color: #5145e5;
+      font-size: 13px;
+      font-weight: bold;
+    }
+    h1 { font-size: clamp(36px, 6vw, 60px); margin: 24px 0 16px; }
+    .hero p { color: #667085; font-size: 17px; line-height: 1.7; }
+    .search {
+      display: flex;
+      gap: 8px;
+      max-width: 570px;
+      margin: 30px auto 0;
+      padding: 7px;
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 13px;
+    }
+    .search input {
+      flex: 1; min-width: 0; border: 0; outline: 0;
+      padding: 12px; font-size: 15px;
+    }
+    main { max-width: 1150px; margin: auto; padding: 45px 22px; }
+    .section-heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .section-heading h2 { font-size: 27px; }
+    .categories { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0 35px; }
+    .category { background: white; border: 1px solid #e5e7eb; color: #374151; }
+    .category.active { background: #5145e5; color: white; }
+    .products {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 22px;
+    }
+    .product {
+      background: white; border: 1px solid #e9ebf2;
+      border-radius: 16px; overflow: hidden;
+    }
+    .art {
+      height: 175px; display: grid; place-items: center;
+      font-size: 54px; background: #eeecff;
+    }
+    .product:nth-child(2) .art { background: #e4f7ee; }
+    .product:nth-child(3) .art { background: #fff0df; }
+    .product:nth-child(4) .art { background: #e3f1ff; }
+    .product:nth-child(5) .art { background: #ffe8f1; }
+    .product:nth-child(6) .art { background: #e8eefa; }
+    .product-info { padding: 18px; }
+    .product-info h3 { margin: 0 0 9px; font-size: 17px; }
+    .product-info p { color: #6b7280; font-size: 14px; line-height: 1.5; }
+    .product-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 18px; }
+    .price { font-size: 18px; font-weight: 800; }
+    .small { padding: 9px 12px; }
+    .empty { grid-column: 1/-1; text-align: center; color: #667085; padding: 35px; }
+    footer { text-align: center; padding: 30px 15px; color: #667085; background: white; }
+    @media (max-width: 750px) {
+      header { padding: 16px 5%; }
+      nav { gap: 10px; }
+      nav a { display: none; }
+      .hero { padding: 65px 18px; }
+      .products { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+      .art { height: 125px; font-size: 42px; }
+      .product-info { padding: 12px; }
+      .product-info h3 { font-size: 15px; }
+      .product-bottom { align-items: flex-start; flex-direction: column; gap: 10px; }
+    }
+    @media (max-width: 390px) {
+      .products { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">GM Digital</div>
+    <nav>
+      <a href="#products" data-en="Explore" data-id="Jelajahi">Explore</a>
+      <a href="#categories" data-en="Categories" data-id="Kategori">Categories</a>
+      <button id="language" class="category" type="button">ID / EN</button>
+      <button class="primary" type="button" id="signin" data-en="Sign in" data-id="Masuk">Sign in</button>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <span class="tag" data-en="YOUR GLOBAL DIGITAL MARKETPLACE" data-id="MARKETPLACE DIGITAL GLOBAL">YOUR GLOBAL DIGITAL MARKETPLACE</span>
+    <h1 data-en="Digital products.<br>Infinite possibilities." data-id="Produk digital.<br>Peluang tanpa batas.">Digital products.<br>Infinite possibilities.</h1>
+    <p data-en="Discover useful digital products from creators around the world." data-id="Temukan produk digital bermanfaat dari kreator di seluruh dunia.">Discover useful digital products from creators around the world.</p>
+    <div class="search">
+      <input id="search" type="search" placeholder="Search digital products..." aria-label="Search products">
+      <button class="primary" id="searchButton" data-en="Search" data-id="Cari">Search</button>
+    </div>
+  </section>
+
+  <main>
+    <div class="section-heading" id="categories">
+      <h2 data-en="Browse categories" data-id="Jelajahi kategori">Browse categories</h2>
+    </div>
+    <div class="categories" id="categoryButtons">
+      <button class="category active" data-category="All" data-en="All products" data-id="Semua produk">All products</button>
+      <button class="category" data-category="E-books">E-books</button>
+      <button class="category" data-category="Templates">Templates</button>
+      <button class="category" data-category="Design">Design assets</button>
+      <button class="category" data-category="Photos">Photos & video</button>
+      <button class="category" data-category="Fonts">Fonts & presets</button>
+    </div>
+
+    <div class="section-heading" id="products">
+      <h2 data-en="Explore digital products" data-id="Jelajahi produk digital">Explore digital products</h2>
+    </div>
+    <div class="products" id="productGrid">
+      <article class="product" data-category="E-books" data-name="Business e-book">
+        <div class="art">📚</div>
+        <div class="product-info">
+          <h3>Business E-book</h3>
+          <p>A sample listing for a practical digital guide.</p>
+          <div class="product-bottom"><span class="price">$9.00</span><button class="primary small" data-buy>View product</button></div>
+        </div>
+      </article>
+      <article class="product" data-category="Templates" data-name="Social media templates">
+        <div class="art">🎨</div>
+        <div class="product-info">
+          <h3>Social Media Templates</h3>
+          <p>Ready-to-customize layouts for creators.</p>
+          <div class="product-bottom"><span class="price">$12.00</span><button class="primary small" data-buy>View product</button></div>
+        </div>
+      </article>
+      <article class="product" data-category="Design" data-name="UI design kit">
+        <div class="art">🖥️</div>
+        <div class="product-info">
+          <h3>UI Design Kit</h3>
+          <p>A sample kit for modern digital projects.</p>
+          <div class="product-bottom"><span class="price">$19.00</span><button class="primary small" data-buy>View product</button></div>
+        </div>
+      </article>
+      <article class="product" data-category="Photos" data-name="Photography bundle">
+        <div class="art">📸</div>
+        <div class="product-info">
+          <h3>Photography Bundle</h3>
+          <p>Sample digital photography resources.</p>
+          <div class="product-bottom"><span class="price">$8.00</span><button class="primary small" data-buy>View product</button></div>
+        </div>
+      </article>
+      <article class="product" data-category="Fonts" data-name="Font and preset pack">
+        <div class="art">🔤</div>
+        <div class="product-info">
+          <h3>Font & Preset Pack</h3>
+          <p>Creative resources for design workflows.</p>
+          <div class="product-bottom"><span class="price">$7.00</span><button class="primary small" data-buy>View product</button></div>
+        </div>
+      </article>
+      <article class="product" data-category="Templates" data-name="Website templates">
+        <div class="art">🌐</div>
+        <div class="product-info">
+          <h3>Website Templates</h3>
+          <p>A sample starting point for website creators.</p>
+          <div class="product-bottom"><span class="price">$25.00</span><button class="primary small" data-buy>View product</button></div>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <footer>© <span id="year"></span> GM Digital. <span data-en="Digital products for a global community." data-id="Produk digital untuk komunitas global.">Digital products for a global community.</span></footer>
+
+  <script>
+    const grid = document.getElementById('productGrid');
+    const search = document.getElementById('search');
+    let category = 'All';
+    let language = 'en';
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    function filterProducts() {
+      const term = search.value.trim().toLowerCase();
+      let count = 0;
+      grid.querySelectorAll('.product').forEach(product => {
+        const matchesCategory = category === 'All' || product.dataset.category === category;
+        const matchesSearch = product.dataset.name.toLowerCase().includes(term);
+        product.hidden = !(matchesCategory && matchesSearch);
+        if (!product.hidden) count++;
+      });
+      let empty = grid.querySelector('.empty');
+      if (!count && !empty) {
+        empty = document.createElement('div');
+        empty.className = 'empty';
+        empty.textContent = language === 'en' ? 'No products found.' : 'Produk tidak ditemukan.';
+        grid.appendChild(empty);
+      } else if (count && empty) empty.remove();
+      if (empty) empty.textContent = language === 'en' ? 'No products found.' : 'Produk tidak ditemukan.';
+    }
+
+    document.getElementById('categoryButtons').addEventListener('click', event => {
+      const button = event.target.closest('button[data-category]');
+      if (!button) return;
+      category = button.dataset.category;
+      document.querySelectorAll('#categoryButtons button').forEach(item => item.classList.toggle('active', item === button));
+      filterProducts();
+    });
+
+    document.getElementById('searchButton').addEventListener('click', filterProducts);
+    search.addEventListener('input', filterProducts);
+
+    document.getElementById('language').addEventListener('click', () => {
+      language = language === 'en' ? 'id' : 'en';
+      document.documentElement.lang = language;
+      document.querySelectorAll('[data-en]').forEach(element => {
+        element.innerHTML = language === 'en' ? element.dataset.en : element.dataset.id;
+      });
+      search.placeholder = language === 'en' ? 'Search digital products...' : 'Cari produk digital...';
+      document.querySelectorAll('[data-buy]').forEach(button => {
+        button.textContent = language === 'en' ? 'View product' : 'Lihat produk';
+      });
+      filterProducts();
+    });
+
+    document.getElementById('signin').addEventListener('click', () => {
+      alert(language === 'en'
+        ? 'Account registration will be added in the next development stage.'
+        : 'Pendaftaran akun akan ditambahkan pada tahap pengembangan berikutnya.');
+    });
+
+    grid.addEventListener('click', event => {
+      if (!event.target.closest('[data-buy]')) return;
+      alert(language === 'en'
+        ? 'Product details and secure checkout will be added in a later stage.'
+        : 'Detail produk dan pembayaran aman akan ditambahkan pada tahap berikutnya.');
+    });
+  </script>
+</body>
+</html>
