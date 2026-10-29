@@ -447,7 +447,41 @@ footer {
     </div>
   </main>
 
-  <footer>© <span id="year"></span> GM Digital. <span data-en="Digital products for a global community." data-id="Produk digital untuk komunitas global.">Digital products for a global community.</span></footer>
+  
+  <div id="accountModal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.8);padding:20px;overflow-y:auto;">
+    <div style="max-width:440px;margin:40px auto;background:#11162a;color:#f5f6ff;border:1px solid #34385a;border-radius:18px;padding:24px;">
+      <button id="closeAccountModal" type="button" style="float:right;background:#252b45;color:white;">✕</button>
+      <h2 id="accountTitle">Create your account</h2>
+      <p style="color:#a2abc6;">Choose how you want to use GM Digital.</p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0;">
+        <button type="button" data-role="buyer" class="category">🛍️ Buyer</button>
+        <button type="button" data-role="seller" class="category">🏪 Seller</button>
+      </div>
+
+      <form id="accountForm">
+        <label for="accountName">Full name</label>
+        <input id="accountName" required maxlength="100" autocomplete="name" style="display:block;width:100%;padding:12px;margin:8px 0 16px;border-radius:8px;">
+
+        <div id="storeFields" hidden>
+          <label for="storeName">Store name</label>
+          <input id="storeName" maxlength="100" autocomplete="organization" style="display:block;width:100%;padding:12px;margin:8px 0 16px;border-radius:8px;">
+
+          <label for="storeDescription">Short store description</label>
+          <textarea id="storeDescription" maxlength="500" style="display:block;width:100%;padding:12px;margin:8px 0 16px;border-radius:8px;"></textarea>
+
+          <label style="display:flex;gap:8px;align-items:flex-start;margin:14px 0;">
+            <input id="sellerTerms" type="checkbox">
+            <span>I agree not to sell illegal, obscene, pirated, or unauthorized products.</span>
+          </label>
+        </div>
+
+        <p id="accountNotice" style="color:#a2abc6;font-size:13px;">Account creation will be connected to Supabase next.</p>
+        <button type="submit" class="primary" style="width:100%;">Continue</button>
+      </form>
+    </div>
+  </div>
+<footer>© <span id="year"></span> GM Digital. <span data-en="Digital products for a global community." data-id="Produk digital untuk komunitas global.">Digital products for a global community.</span></footer>
 
   <script>
     const grid = document.getElementById('productGrid');
@@ -500,11 +534,47 @@ footer {
       filterProducts();
     });
 
-    document.getElementById('signin').addEventListener('click', () => {
-      alert(language === 'en'
-        ? 'Account registration will be added in the next development stage.'
-        : 'Pendaftaran akun akan ditambahkan pada tahap pengembangan berikutnya.');
+    
+const accountModal = document.getElementById('accountModal');
+const storeFields = document.getElementById('storeFields');
+const sellerTerms = document.getElementById('sellerTerms');
+let selectedRole = 'buyer';
+
+document.getElementById('signin').addEventListener('click', () => {
+  accountModal.style.display = 'block';
+});
+
+document.getElementById('closeAccountModal').addEventListener('click', () => {
+  accountModal.style.display = 'none';
+});
+
+document.querySelectorAll('[data-role]').forEach(button => {
+  button.addEventListener('click', () => {
+    selectedRole = button.dataset.role;
+    storeFields.hidden = selectedRole !== 'seller';
+    sellerTerms.required = selectedRole === 'seller';
+
+    document.querySelectorAll('[data-role]').forEach(item => {
+      item.classList.toggle('active', item === button);
     });
+  });
+});
+
+document.getElementById('accountForm').addEventListener('submit', event => {
+  event.preventDefault();
+
+  if (selectedRole === 'seller' && !sellerTerms.checked) {
+    alert('Please accept the seller terms first.');
+    return;
+  }
+
+  alert(
+    selectedRole === 'seller'
+      ? 'Seller application form is ready. Supabase registration will be connected next.'
+      : 'Buyer registration form is ready. Supabase registration will be connected next.'
+  );
+});
+
 
     grid.addEventListener('click', event => {
       if (!event.target.closest('[data-buy]')) return;
