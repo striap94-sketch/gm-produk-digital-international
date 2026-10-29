@@ -462,6 +462,13 @@ footer {
       <form id="accountForm">
         <label for="accountName">Full name</label>
         <input id="accountName" required maxlength="100" autocomplete="name" style="display:block;width:100%;padding:12px;margin:8px 0 16px;border-radius:8px;">
+        
+<label for="accountEmail">Email</label>
+<input id="accountEmail" type="email" required maxlength="254" autocomplete="email" style="display:block;width:100%;padding:12px;margin:8px 0 16px;border-radius:8px;">
+
+<label for="accountPassword">Password</label>
+<input id="accountPassword" type="password" required minlength="8" autocomplete="new-password" style="display:block;width:100%;padding:12px;margin:8px 0 16px;border-radius:8px;">
+
 
         <div id="storeFields" hidden>
           <label for="storeName">Store name</label>
@@ -535,6 +542,7 @@ footer {
     });
 
     
+
 const accountModal = document.getElementById('accountModal');
 const storeFields = document.getElementById('storeFields');
 const sellerTerms = document.getElementById('sellerTerms');
@@ -560,20 +568,77 @@ document.querySelectorAll('[data-role]').forEach(button => {
   });
 });
 
-document.getElementById('accountForm').addEventListener('submit', event => {
+document.getElementById('accountForm').addEventListener('submit', async event => {
   event.preventDefault();
 
-  if (selectedRole === 'seller' && !sellerTerms.checked) {
-    alert('Please accept the seller terms first.');
-    return;
+  const name = document.getElementById('accountName').value.trim();
+  const email = document.getElementById('accountEmail').value.trim();
+  const password = document.getElementById('accountPassword').value;
+  const notice = document.getElementById('accountNotice');
+
+  if (selectedRole === 'seller') {
+    if (!sellerTerms.checked) {
+      notice.textContent = 'Please accept the seller terms.';
+      return;
+    }
+
+    if (!document.getElementById('storeName').value.trim()) {
+      notice.textContent = 'Please enter your store name.';
+      return;
+    }
   }
 
-  alert(
-    selectedRole === 'seller'
-      ? 'Seller application form is ready. Supabase registration will be connected next.'
-      : 'Buyer registration form is ready. Supabase registration will be connected next.'
-  );
+  const submitButton = event.submitter;
+  if (submitButton) submitButton.disabled = true;
+  notice.textContent = 'Creating your account...';
+
+  try {
+    const { data, error } = await supabaseClient.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { display_name: name }
+      }
+    });
+
+    if (error) throw error;
+
+    if (!data.user) {
+      throw new Error('Account creation could not be confirmed.');
+    }
+
+    if (selectedRole === 'seller') {
+      if (!data.session) {
+        notice.textContent =
+          'Account created. Please confirm your email, then sign in to submit your seller application.';
+        return;
+      }
+
+      const { error: applicationError } = await supabaseClient
+        .from('seller_applications')
+        .insert({
+          user_id: data.user.id,
+          store_name: document.getElementById('storeName').value.trim(),
+          store_description: document.getElementById('storeDescription').value.trim(),
+          terms_accepted: sellerTerms.checked,
+          status: 'pending'
+        });
+
+      if (applicationError) throw applicationError;
+
+      notice.textContent =
+        'Account created. Your seller application is pending admin review.';
+    } else {
+      notice.textContent =
+        'Account created. Check your email if confirmation is required.';
+    }
+  } catch (error) {
+    notice.textContent = error.message || 'Registration failed. Please try again.';
+  } finally {
+    if (submitButton) submitButton.disabled = false;
+  }
 });
+
 
 
     grid.addEventListener('click', event => {
