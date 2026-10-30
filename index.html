@@ -558,6 +558,13 @@ let accountMode = 'signup';
 document.getElementById('signin').addEventListener('click', () => {
   accountModal.style.display = 'block';
 });
+async function updateLoginButton() {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+
+  document.getElementById('signin').textContent =
+    session ? 'My Account' : 'Sign in';
+}
+
 
 function setAccountMode(mode) {
   accountMode = mode;
@@ -568,6 +575,7 @@ function setAccountMode(mode) {
   document.getElementById('showLogin').classList.toggle('active', mode === 'login');
   document.getElementById('showSignup').classList.toggle('active', mode === 'signup');
   document.getElementById('accountName').required = mode === 'signup';
+  document.getElementById('accountUsername').required = mode === 'signup';
 
 document.querySelectorAll('[data-role]').forEach(item => {
   item.style.display = mode === 'signup' ? '' : 'none';
@@ -653,22 +661,26 @@ document.getElementById('accountForm').addEventListener('submit', async event =>
   const submitButton = event.submitter;
   if (submitButton) submitButton.disabled = true;
   notice.textContent = 'Creating your account...';
-
-  try {
-    const { data, error } = await supabaseClient.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { display_name: name }
+try {
+  const { data, error } = await supabaseClient.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        display_name: name,
+        username: document.getElementById('accountUsername').value.trim().toLowerCase()
       }
-    });
-
-    if (error) throw error;
-
-    if (!data.user) {
-      throw new Error('Account creation could not be confirmed.');
     }
+  });
 
+  if (error) throw error;
+
+  if (!data.user) {
+    throw new Error('Account creation could not be confirmed.');
+  }
+
+  
+  
     if (selectedRole === 'seller') {
       if (!data.session) {
         notice.textContent =
@@ -694,8 +706,12 @@ document.getElementById('accountForm').addEventListener('submit', async event =>
       notice.textContent =
         'Account created. Check your email if confirmation is required.';
     }
-  } catch (error) {
-    notice.textContent = error.message || 'Registration failed. Please try again.';
+    } catch (error) {
+    if (error.code === '23505' || (error.message || '').toLowerCase().includes('unique')) {
+      notice.textContent = 'Username is already taken. Please choose another one.';
+    } else {
+      notice.textContent = error.message || 'Registration failed. Please try again.';
+    }
   } finally {
     if (submitButton) submitButton.disabled = false;
   }
@@ -721,6 +737,19 @@ document.getElementById('accountForm').addEventListener('submit', async event =>
   );
 
   console.log('Supabase client initialized');
+  async function updateLoginButton() {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+
+  document.getElementById('signin').textContent =
+    session ? 'My Account' : 'Sign in';
+}
+
+updateLoginButton();
+
+supabaseClient.auth.onAuthStateChange((_event, session) => {
+  document.getElementById('signin').textContent =
+    session ? 'My Account' : 'Sign in';
+});
 </script>
 </body>
 </html>
