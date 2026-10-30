@@ -619,6 +619,7 @@ document.getElementById('accountForm').addEventListener('submit', async event =>
       if (error) throw error;
 
       notice.textContent = 'Login successful!';
+     document.getElementById('signin').textContent = 'My Account'; 
       accountModal.style.display = 'none';
     } catch (error) {
       notice.textContent = error.message;
