@@ -452,6 +452,12 @@ footer {
     <div style="max-width:440px;margin:40px auto;background:#11162a;color:#f5f6ff;border:1px solid #34385a;border-radius:18px;padding:24px;">
       <button id="closeAccountModal" type="button" style="float:right;background:#252b45;color:white;">✕</button>
       <h2 id="accountTitle">Create your account</h2>
+      
+<div class="account-tabs">
+  <button type="button" id="showLogin">Login</button>
+  <button type="button" id="showSignup" class="active">Sign Up</button>
+</div>
+
       <p style="color:#a2abc6;">Choose how you want to use GM Digital.</p>
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0;">
@@ -547,10 +553,38 @@ const accountModal = document.getElementById('accountModal');
 const storeFields = document.getElementById('storeFields');
 const sellerTerms = document.getElementById('sellerTerms');
 let selectedRole = 'buyer';
+let accountMode = 'signup';    
 
 document.getElementById('signin').addEventListener('click', () => {
   accountModal.style.display = 'block';
 });
+
+function setAccountMode(mode) {
+  accountMode = mode;
+
+  document.getElementById('accountTitle').textContent =
+    mode === 'login' ? 'Welcome Back' : 'Create your account';
+
+  document.getElementById('showLogin').classList.toggle('active', mode === 'login');
+  document.getElementById('showSignup').classList.toggle('active', mode === 'signup');
+  document.getElementById('accountName').required = mode === 'signup';
+
+document.querySelectorAll('[data-role]').forEach(item => {
+  item.style.display = mode === 'signup' ? '' : 'none';
+});
+
+storeFields.hidden = mode === 'login' || selectedRole !== 'seller';
+sellerTerms.required = mode === 'signup' && selectedRole === 'seller';
+document.getElementById('accountNotice').textContent = '';  
+}
+document.getElementById('showLogin').addEventListener('click', () => {
+  setAccountMode('login');
+});
+
+document.getElementById('showSignup').addEventListener('click', () => {
+  setAccountMode('signup');
+});
+    
 
 document.getElementById('closeAccountModal').addEventListener('click', () => {
   accountModal.style.display = 'none';
@@ -570,8 +604,35 @@ document.querySelectorAll('[data-role]').forEach(button => {
 
 document.getElementById('accountForm').addEventListener('submit', async event => {
   event.preventDefault();
+  
+  if (accountMode === 'login') {
+    const email = document.getElementById('accountEmail').value.trim();
+    const password = document.getElementById('accountPassword').value;
+    const notice = document.getElementById('accountNotice');
+
+    try {
+      const { error } = await supabaseClient.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) throw error;
+
+      notice.textContent = 'Login successful!';
+      accountModal.style.display = 'none';
+    } catch (error) {
+      notice.textContent = error.message;
+    }
+
+    return;
+  }
+
 
   const name = document.getElementById('accountName').value.trim();
+ if (accountMode === 'signup' && !name) {
+  document.getElementById('accountNotice').textContent = 'Please enter your name.';
+  return;
+} 
   const email = document.getElementById('accountEmail').value.trim();
   const password = document.getElementById('accountPassword').value;
   const notice = document.getElementById('accountNotice');
