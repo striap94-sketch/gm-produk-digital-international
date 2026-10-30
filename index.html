@@ -468,6 +468,18 @@ footer {
       <form id="accountForm">
         <label for="accountName">Full name</label>
         <input id="accountName" required maxlength="100" autocomplete="name" style="display:block;width:100%;padding:12px;margin:8px 0 16px;border-radius:8px;">
+        <label for="accountUsername">Username</label>
+<input
+  id="accountUsername"
+  type="text"
+  required
+  minlength="3"
+  maxlength="20"
+  pattern="[a-zA-Z0-9_]+"
+  autocomplete="username"
+  placeholder="Contoh: andi123"
+  style="display:block;width:100%;padding:12px;margin:8px 0 16px;border-radius:8px;"
+>
         
 <label for="accountEmail">Email</label>
 <input id="accountEmail" type="email" required maxlength="254" autocomplete="email" style="display:block;width:100%;padding:12px;margin:8px 0 16px;border-radius:8px;">
