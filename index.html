@@ -451,6 +451,16 @@ footer {
   <div id="accountModal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.8);padding:20px;overflow-y:auto;">
     <div style="max-width:440px;margin:40px auto;background:#11162a;color:#f5f6ff;border:1px solid #34385a;border-radius:18px;padding:24px;">
       <button id="closeAccountModal" type="button" style="float:right;background:#252b45;color:white;">✕</button>
+      <div id="myAccountPage" hidden>
+  <h2>My Account</h2>
+  <p>Full name: <span id="profileName">-</span></p>
+  <p>Username: <span id="profileUsername">-</span></p>
+  <p>Email: <span id="profileEmail">-</span></p>
+  <p>Role: <span id="profileRole">-</span></p>
+  <button type="button" id="logoutButton" class="primary" style="width:100%;">
+    Logout
+  </button>
+</div>
       <h2 id="accountTitle">Create your account</h2>
       
 <div class="account-tabs">
@@ -458,9 +468,9 @@ footer {
   <button type="button" id="showSignup" class="active">Sign Up</button>
 </div>
 
-      <p style="color:#a2abc6;">Choose how you want to use GM Digital.</p>
+      <p id="accountIntro" style="color:#a2abc6;">Choose how you want to use GM Digital.</p>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0;">
+      <div id="accountRoleOptions" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0;">
         <button type="button" data-role="buyer" class="category">🛍️ Buyer</button>
         <button type="button" data-role="seller" class="category">🏪 Seller</button>
       </div>
@@ -567,8 +577,46 @@ const sellerTerms = document.getElementById('sellerTerms');
 let selectedRole = 'buyer';
 let accountMode = 'signup';    
 
-document.getElementById('signin').addEventListener('click', () => {
+document.getElementById('signin').addEventListener('click', async () => {
   accountModal.style.display = 'block';
+
+  const { data: { session } } = await supabaseClient.auth.getSession();
+
+  if (session) {
+    const { data: profile } = await supabaseClient
+      .from('profiles')
+      .select('display_name, username, role')
+      .eq('id', session.user.id)
+      .single();
+
+    document.getElementById('profileName').textContent =
+      profile?.display_name || '-';
+
+    document.getElementById('profileUsername').textContent =
+      profile?.username || '-';
+
+    document.getElementById('profileEmail').textContent =
+      session.user.email || '-';
+
+    document.getElementById('profileRole').textContent =
+      profile?.role || '-';
+
+    document.getElementById('myAccountPage').hidden = false;
+    document.getElementById('accountIntro').hidden = true;
+    document.getElementById('accountRoleOptions').hidden = true;
+    document.getElementById('accountTitle').hidden = true;
+    document.querySelector('.account-tabs').hidden = true;
+    document.getElementById('accountForm').hidden = true;
+  } else {
+    document.getElementById('myAccountPage').hidden = true;
+    document.getElementById('accountIntro').hidden = false;
+    document.getElementById('accountRoleOptions').hidden = false;
+    document.getElementById('accountTitle').hidden = false;
+    document.querySelector('.account-tabs').hidden = false;
+    document.getElementById('accountForm').hidden = false;
+
+    setAccountMode('signup');
+  }
 });
 async function updateLoginButton() {
   const { data: { session } } = await supabaseClient.auth.getSession();
@@ -603,6 +651,17 @@ document.getElementById('showLogin').addEventListener('click', () => {
 
 document.getElementById('showSignup').addEventListener('click', () => {
   setAccountMode('signup');
+});
+    document.getElementById('logoutButton').addEventListener('click', async () => {
+  const { error } = await supabaseClient.auth.signOut();
+
+  if (error) {
+    alert('Gagal logout: ' + error.message);
+    return;
+  }
+
+  accountModal.style.display = 'none';
+  document.getElementById('myAccountPage').hidden = true;
 });
     
 
