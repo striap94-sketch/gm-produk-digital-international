@@ -683,7 +683,7 @@ document.getElementById('showSignup').addEventListener('click', () => {
     return;
   }
 
-  notice.textContent = 'If this email is registered, you will receive a password reset link.';
+  notice.textContent = 'If this email is registered, a password reset link will be sent. Please check your inbox and spam folder.';
 });
     document.getElementById('logoutButton').addEventListener('click', async () => {
   const { error } = await supabaseClient.auth.signOut();
