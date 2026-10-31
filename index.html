@@ -753,8 +753,12 @@ try {
   if (error) throw error;
 
   if (!data.user) {
-    throw new Error('Account creation could not be confirmed.');
-  }
+  throw new Error('Account creation could not be confirmed.');
+}
+
+if (data.user.identities?.length === 0) {
+  throw new Error('Email sudah terdaftar. Silakan gunakan email lain.');
+}
 
   
   
