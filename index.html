@@ -496,6 +496,13 @@ footer {
 
 <label for="accountPassword">Password</label>
 <input id="accountPassword" type="password" required minlength="8" autocomplete="new-password" style="display:block;width:100%;padding:12px;margin:8px 0 16px;border-radius:8px;">
+<button
+  type="button"
+  id="forgotPassword"
+  style="display:block;background:none;border:none;color:#8b9cff;padding:0;margin:-5px 0 16px;cursor:pointer;"
+>
+  Forgot Password?
+</button>        
 
 
         <div id="storeFields" hidden>
@@ -657,6 +664,26 @@ document.getElementById('showLogin').addEventListener('click', () => {
 
 document.getElementById('showSignup').addEventListener('click', () => {
   setAccountMode('signup');
+});
+    document.getElementById('forgotPassword').addEventListener('click', async () => {
+  const email = document.getElementById('accountEmail').value.trim();
+  const notice = document.getElementById('accountNotice');
+
+  if (!email) {
+    notice.textContent = 'Please enter your email first.';
+    return;
+  }
+
+  const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+    redirectTo: 'https://gm-produk-digital-international.vercel.app/'
+  });
+
+  if (error) {
+    notice.textContent = error.message;
+    return;
+  }
+
+  notice.textContent = 'If this email is registered, you will receive a password reset link.';
 });
     document.getElementById('logoutButton').addEventListener('click', async () => {
   const { error } = await supabaseClient.auth.signOut();
