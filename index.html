@@ -805,9 +805,17 @@ try {
     password,
     options: {
       data: {
-        display_name: name,
-        username: document.getElementById('accountUsername').value.trim().toLowerCase()
-      }
+  display_name: name,
+username: document.getElementById('accountUsername').value.trim().toLowerCase(),
+role: selectedRole,
+store_name: selectedRole === 'seller'
+  ? document.getElementById('storeName').value.trim()
+  : '',
+store_description: selectedRole === 'seller'
+  ? document.getElementById('storeDescription').value.trim()
+  : '',
+terms_accepted: selectedRole === 'seller' && sellerTerms.checked
+}
     }
   });
 
@@ -821,33 +829,15 @@ if (data.user.identities?.length === 0) {
   throw new Error('Email sudah terdaftar. Silakan gunakan email lain.');
 }
 
-  
-  
-    if (selectedRole === 'seller') {
-      if (!data.session) {
-        notice.textContent =
-          'Account created. Please confirm your email, then sign in to submit your seller application.';
-        return;
-      }
-
-      const { error: applicationError } = await supabaseClient
-        .from('seller_applications')
-        .insert({
-          user_id: data.user.id,
-          store_name: document.getElementById('storeName').value.trim(),
-          store_description: document.getElementById('storeDescription').value.trim(),
-          terms_accepted: sellerTerms.checked,
-          status: 'pending'
-        });
-
-      if (applicationError) throw applicationError;
-
-      notice.textContent =
-        'Account created. Your seller application is pending admin review.';
-    } else {
-      notice.textContent =
-        'Account created. Check your email if confirmation is required.';
-    }
+  if (selectedRole === 'seller') {
+  notice.textContent = data.session
+    ? 'Seller account created successfully! Your seller account is active.'
+    : 'Seller account created. Please confirm your email, then sign in. Your seller account will be active.';
+} else {
+  notice.textContent =
+    'Buyer account created. Check your email if confirmation is required.';
+}
+    
     } catch (error) {
     if (error.code === '23505' || (error.message || '').toLowerCase().includes('unique')) {
       notice.textContent = 'Username is already taken. Please choose another one.';
