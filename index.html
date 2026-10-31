@@ -583,11 +583,17 @@ document.getElementById('signin').addEventListener('click', async () => {
   const { data: { session } } = await supabaseClient.auth.getSession();
 
   if (session) {
-    const { data: profile } = await supabaseClient
-      .from('profiles')
-      .select('display_name, username, role')
-      .eq('id', session.user.id)
-      .single();
+    const { data: profile, error: profileError } = await supabaseClient
+  .from('profiles')
+  .select('display_name, username, role')
+  .eq('id', session.user.id)
+  .single();
+
+if (profileError) {
+  console.error('Profile error:', profileError);
+  alert('Gagal mengambil profil: ' + profileError.message);
+  return;
+}
 
     document.getElementById('profileName').textContent =
       profile?.display_name || '-';
