@@ -457,11 +457,63 @@ footer {
   <p>Username: <span id="profileUsername">-</span></p>
   <p>Email: <span id="profileEmail">-</span></p>
   <p>Role: <span id="profileRole">-</span></p>
-  <button type="button" id="logoutButton" class="primary" style="width:100%;">
-    Logout
-  </button>
-</div>
 
+<button
+  type="button"
+  id="sellerStoreButton"
+  class="primary"
+  style="width:100%;margin-bottom:12px;"
+  hidden
+>
+  🏪 My Store
+</button>
+
+<button type="button" id="logoutButton" class="primary" style="width:100%;">
+  Logout
+</button>
+</div>
+<div id="sellerStorePage" hidden>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+    <h2 style="margin:0;">My Store</h2>
+    <button type="button" id="closeSellerStore" style="background:#252b45;color:white;">✕</button>
+  </div>
+
+  <div style="height:130px;background:linear-gradient(135deg,#4338ca,#2563eb);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:0;">
+    <span style="color:white;font-weight:bold;">Store Banner</span>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:15px;margin-top:-5px;padding:15px 5px;">
+    <div style="width:76px;height:76px;border-radius:50%;background:#34385a;border:4px solid #11162a;display:flex;align-items:center;justify-content:center;font-size:28px;">
+      👤
+    </div>
+    <div>
+      <h3 style="margin:0;">Store Name</h3>
+      <p style="margin:5px 0;color:#a2abc6;">@username</p>
+    </div>
+  </div>
+
+  <p id="sellerStoreBio" style="color:#c5cbe0;">Store bio will appear here.</p>
+
+  <div style="display:flex;gap:22px;margin:15px 0;">
+    <span><b id="sellerFollowingCount">0</b> Following</span>
+    <span><b id="sellerFollowersCount">0</b> Followers</span>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:20px 0;">
+    <button type="button" id="sellerReelsTab" class="primary">▶ Reels</button>
+    <button type="button" id="sellerProductsTab" class="primary">▦ Products</button>
+  </div>
+
+  <div id="sellerReelsContent">
+    <h3>Reels</h3>
+    <p style="color:#a2abc6;">Your videos will appear here.</p>
+  </div>
+
+  <div id="sellerProductsContent" hidden>
+    <h3>Products</h3>
+    <p style="color:#a2abc6;">Your products will appear here.</p>
+  </div>
+</div>
 <div id="resetPasswordPage" hidden>
   <h2>Set New Password</h2>
   <p style="color:#a2abc6;">Enter your new password below.</p>
