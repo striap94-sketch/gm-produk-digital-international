@@ -699,6 +699,9 @@ if (profileError) {
 
     document.getElementById('profileRole').textContent =
       profile?.role || '-';
+    
+    document.getElementById('sellerStoreButton').hidden =
+  profile?.role !== 'seller';
 
     document.getElementById('myAccountPage').hidden = false;
     document.getElementById('accountIntro').hidden = true;
@@ -978,6 +981,27 @@ supabaseClient.auth.onAuthStateChange((event, session) => {
     document.getElementById('accountIntro').hidden = true;
     document.getElementById('accountRoleOptions').hidden = true;
   }
+});
+</script>
+  <script>
+document.getElementById('sellerStoreButton').addEventListener('click', function () {
+  document.getElementById('myAccountPage').hidden = true;
+  document.getElementById('sellerStorePage').hidden = false;
+});
+
+document.getElementById('closeSellerStore').addEventListener('click', function () {
+  document.getElementById('sellerStorePage').hidden = true;
+  document.getElementById('myAccountPage').hidden = false;
+});
+
+document.getElementById('sellerReelsTab').addEventListener('click', function () {
+  document.getElementById('sellerReelsContent').hidden = false;
+  document.getElementById('sellerProductsContent').hidden = true;
+});
+
+document.getElementById('sellerProductsTab').addEventListener('click', function () {
+  document.getElementById('sellerReelsContent').hidden = true;
+  document.getElementById('sellerProductsContent').hidden = false;
 });
 </script>
 </body>
