@@ -461,7 +461,41 @@ footer {
     Logout
   </button>
 </div>
-      <h2 id="accountTitle">Create your account</h2>
+
+<div id="resetPasswordPage" hidden>
+  <h2>Set New Password</h2>
+  <p style="color:#a2abc6;">Enter your new password below.</p>
+
+  <form id="resetPasswordForm">
+    <label for="newPassword">New Password</label>
+    <input
+      id="newPassword"
+      type="password"
+      required
+      minlength="8"
+      autocomplete="new-password"
+      style="display:block;width:100%;padding:12px;margin:8px 0 16px;border-radius:8px;"
+    >
+
+    <label for="confirmNewPassword">Confirm New Password</label>
+    <input
+      id="confirmNewPassword"
+      type="password"
+      required
+      minlength="8"
+      autocomplete="new-password"
+      style="display:block;width:100%;padding:12px;margin:8px 0 16px;border-radius:8px;"
+    >
+
+    <p id="resetPasswordNotice" style="color:#a2abc6;"></p>
+
+    <button type="submit" class="primary" style="width:100%;">
+      Update Password
+    </button>
+  </form>
+</div>
+
+<h2 id="accountTitle">Create your account</h2>
       
 <div class="account-tabs">
   <button type="button" id="showLogin">Login</button>
@@ -854,9 +888,54 @@ if (data.user.identities?.length === 0) {
 
 updateLoginButton();
 
-supabaseClient.auth.onAuthStateChange((_event, session) => {
+document.getElementById('resetPasswordForm').addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  const newPassword = document.getElementById('newPassword').value;
+  const confirmPassword = document.getElementById('confirmNewPassword').value;
+  const notice = document.getElementById('resetPasswordNotice');
+
+  if (newPassword !== confirmPassword) {
+    notice.textContent = 'Passwords do not match.';
+    return;
+  }
+
+  const { error } = await supabaseClient.auth.updateUser({
+    password: newPassword
+  });
+
+  if (error) {
+    notice.textContent = 'Failed to update password: ' + error.message;
+    return;
+  }
+
+  notice.textContent = 'Password updated successfully! Please log in again.';
+
+  await supabaseClient.auth.signOut();
+
+  document.getElementById('resetPasswordPage').hidden = true;
+  document.getElementById('accountTitle').hidden = false;
+  document.querySelector('.account-tabs').hidden = false;
+  document.getElementById('accountForm').hidden = false;
+  document.getElementById('accountIntro').hidden = false;
+  document.getElementById('accountRoleOptions').hidden = false;
+});
+
+supabaseClient.auth.onAuthStateChange((event, session) => {
   document.getElementById('signin').textContent =
     session ? 'My Account' : 'Sign in';
+
+  if (event === 'PASSWORD_RECOVERY') {
+    document.getElementById('accountModal').style.display = 'block';
+
+    document.getElementById('myAccountPage').hidden = true;
+    document.getElementById('resetPasswordPage').hidden = false;
+    document.getElementById('accountTitle').hidden = true;
+    document.querySelector('.account-tabs').hidden = true;
+    document.getElementById('accountForm').hidden = true;
+    document.getElementById('accountIntro').hidden = true;
+    document.getElementById('accountRoleOptions').hidden = true;
+  }
 });
 </script>
 </body>
